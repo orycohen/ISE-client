@@ -1,37 +1,69 @@
-import React, { Component } from 'react';
-import { HashRouter as Router, Route, Link, NavLink } from 'react-router-dom';
-import SignUpForm from './components/SignUpForm';
-import SignInForm from './components/SignInForm';
+import React from "react";
+import { BrowserRouter as Router, Link, Route } from "react-router-dom";
+import PrivateRoute from './PrivateRoute';
+import HomePage from "./pages/Home";
+import Admin from "./pages/Admin";
+import LoginPage from './pages/Login';
+import { AuthContext } from "./Contexts/auth";
+import Axios from 'axios';
 
-import './App.css';
+class App extends React.Component {
+  constructor() {
+    super();
+    
+    this.state = {
+      user: null
+    }
+    
+    this.setUser = this.setUser.bind(this);
+  }
 
-class App extends Component {
-  render() {
+  async handleUserStatus() {
+    try {
+      let res = await Axios({
+        method: "GET",
+        withCredentials: true,
+        url: "http://localhost:8080/users/user"
+      });
+      console.log("in the function handleUserStatus, res.data is: ", res.data);
+      this.setState({user: res.data});
+    }
+    catch (err) {
+      // The user is not logged in. TODO Handle the error.
+    }
+  }
+  
+  setUser(user) {
+    this.setState({user: user});
+  }
+
+  componentDidMount() {
+    console.log("Checking user");
+    (async () => {
+      await this.handleUserStatus();
+    })();
+  }
+
+  render() { 
+    console.log("The user is: ", this.state.user);
     return (
-      <Router basename="users/">
-        <div className="App">
-          {/* <div className="App__Aside"></div> */}
-          {/* <div ><image ></image> </div> */}
-          <div className="App__Aside">
+      <AuthContext.Provider value={{user: this.state.user, setUser: this.setUser}}>
+        <Router>
+          <div>
+            <ul>
+              <li>
+                <Link to="/">Home Page</Link>
+              </li>
+              <li>
+                <Link to="/admin">Admin Page</Link>
+              </li>
+            </ul>
+            <Route exact path="/" component={HomePage} />
+            <Route path="/login" component={LoginPage} />
+            <PrivateRoute path="/admin" component={Admin} />
           </div>
-          <div className="App__Form">
-            <div className="PageSwitcher">
-                <NavLink to="/sign-in" activeClassName="PageSwitcher__Item--Active" className="PageSwitcher__Item">Sign In</NavLink>
-                <NavLink exact to="/sign-up" activeClassName="PageSwitcher__Item--Active" className="PageSwitcher__Item">Sign Up</NavLink>
-              </div>
-
-              <div className="FormTitle">
-                  <NavLink to="/sign-in" activeClassName="FormTitle__Link--Active" className="FormTitle__Link">Sign In</NavLink> or <NavLink exact to="/sign-up" activeClassName="FormTitle__Link--Active" className="FormTitle__Link">Sign Up</NavLink>
-              </div>
-
-              <Route exact path="/sign-up" component={SignUpForm}>
-              </Route>
-              <Route path="/sign-in" component={SignInForm}>
-              </Route>
-          </div>
-
-        </div>
-      </Router>
+        </Router>
+      </AuthContext.Provider>
     );
   }
 }
