@@ -1,66 +1,85 @@
 import React from "react";
-import { BrowserRouter as Router, Link, Route } from "react-router-dom";
+import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 import PrivateRoute from './PrivateRoute';
-import HomePage from "./pages/Home";
-import Admin from "./pages/Admin";
-import LoginPage from './pages/Login';
 import { AuthContext } from "./Contexts/auth";
-import Axios from 'axios';
+import Login from './Components/Login/Login';
+import Home from './Components/Home/Home';
+import About from './Components/Home/About';
+import Contact from './Components/Home/Contact';
+import Dashboard from './Components/Dashboard/Dashboard';
+import homeImg from './img/home.png';
+import { Icon, MagnetBox } from './Components/Styled';
+import './App.scss';
 
 class App extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     
     this.state = {
-      user: null
+      user: props.user
     }
     
     this.setUser = this.setUser.bind(this);
+    this.redirectHandler = this.redirectHandler.bind(this);
+    this.emailInputRef = React.createRef();
   }
 
-  async handleUserStatus() {
-    try {
-      let res = await Axios({
-        method: "GET",
-        withCredentials: true,
-        url: "http://localhost:8080/users/user"
-      });
-      console.log("in the function handleUserStatus, res.data is: ", res.data);
-      this.setState({user: res.data});
-    }
-    catch (err) {
-      // The user is not logged in. TODO Handle the error.
-    }
+  redirectHandler() {
+    this.emailInputRef.current.focus();
   }
   
   setUser(user) {
     this.setState({user: user});
   }
 
-  componentDidMount() {
-    console.log("Checking user");
-    (async () => {
-      await this.handleUserStatus();
-    })();
-  }
-
   render() { 
-    console.log("The user is: ", this.state.user);
     return (
       <AuthContext.Provider value={{user: this.state.user, setUser: this.setUser}}>
         <Router>
-          <div>
-            <ul>
-              <li>
-                <Link to="/">Home Page</Link>
-              </li>
-              <li>
-                <Link to="/admin">Admin Page</Link>
-              </li>
-            </ul>
-            <Route exact path="/" component={HomePage} />
-            <Route path="/login" component={LoginPage} />
-            <PrivateRoute path="/admin" component={Admin} />
+          <div className="AppWrapper">
+            <div>
+            </div>
+            <div>
+              <div>
+                {
+                  !(this.state.user) ?
+                  (
+                    <nav className="navbar">
+                      <li>
+                        <Link to="/">
+                          <MagnetBox>
+                            <Icon clickable shadow="4px 4px 4px #333" size={"50px"} src={homeImg} />
+                          </MagnetBox>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/about">About Us</Link>
+                      </li>
+                      <li>
+                        <Link to="/contact">Contact</Link>
+                      </li>
+                      <li>
+                        <Link to="/login">Login</Link>
+                      </li>
+                    </nav>
+                  ) :
+                  (
+                    <nav className="navbar">
+                      <li>
+                        <Link to="/dashboard">Dashboard</Link>
+                      </li>
+                    </nav>
+                  )
+                }
+              </div>
+              <Switch>
+                <Route exact path="/" component={Home} />
+                <Route exact path="/contact" component={Contact} />
+                <Route exact path="/about" component={About} />
+                <Route path="/login" component={Login}/>
+                <PrivateRoute path="/dashboard" component={Dashboard} />
+              </Switch>
+            </div>
           </div>
         </Router>
       </AuthContext.Provider>
