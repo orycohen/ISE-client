@@ -34,9 +34,10 @@ const Input = styled.input`
     color: ${secondary_light};
     transition: border-bottom-color 0.25s;
     text-align: center;
+    position: relative;
   }
   &:focus {
-    outline-width: 0;
+    outline: none;
     border-bottom-color: ${secondary_light};
   }
   &::placeholder {
@@ -46,6 +47,10 @@ const Input = styled.input`
   }
   &:valid {
     border-bottom-color: ${secondary_light};
+  }
+  &::-webkit-credentials-auto-fill-button {
+    position: absolute;
+    right: 0;
   }
 `;
 

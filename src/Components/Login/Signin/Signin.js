@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
+import { withRouter } from 'react-router';
 import Axios from 'axios';
 import logoImg from '../../../img/logo.png';
 import { Card, Icon, Form, Input, Button, Error, MagnetBox } from '../../Styled';
 import { useAuth } from '../../../Contexts/auth';
+import '../../../Styles.scss';
 
 function Signin(props) {
   const [isError, setIsError] = useState(false);
@@ -11,7 +13,7 @@ function Signin(props) {
   const [password, setPassword] = useState('');
   const { setUser, user } = useAuth();
   const referer = (props.location.state && props.location.state.referer) || '/';
-
+  
   function postLogIn() {
     Axios({
       method: 'POST',
@@ -25,6 +27,8 @@ function Signin(props) {
     .then(res => {
         if (res.status === 200) {
             setUser(res.data);
+            let redirectUrl = referer.state ? referer.state.referer.pathname : '/dashboard';
+            props.history.push(redirectUrl);
         }
         else {
             setIsError(true);
@@ -54,4 +58,4 @@ function Signin(props) {
   );
 }
 
-export default Signin;
+export default withRouter(Signin);

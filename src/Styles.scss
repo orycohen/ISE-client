@@ -1,0 +1,26 @@
+@import './Colors.scss';
+
+.input {
+  background-color: transparent;
+  border-width: 0 0 0 0;
+  border-bottom: 1px solid $secondary_dark;
+  padding: 5px;
+  font-size: 1.5rem;
+  color: $secondary_light;
+  transition: border-bottom-color 0.25s;
+  text-align: center;
+  outline-width: 0;
+}
+.input:focus {
+  outline-width: 0;
+  border-bottom-color: $secondary_light;
+}
+.input::placeholder {
+  text-align: center;
+  color: $secondary_dark;
+  letter-spacing: 1px;
+}
+.input:valid {
+  border-bottom-color: $secondary_light;
+}
+

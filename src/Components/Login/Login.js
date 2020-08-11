@@ -1,18 +1,13 @@
 import React from 'react';
 import Signin from './Signin/Signin';
 import Signup from './Signup/Signup';
-import { useAuth } from '../../Contexts/auth';
 import { Redirect, Route, Switch, useRouteMatch } from 'react-router-dom';
 import { MagnetBox } from '../../Components/Styled';
 import './Login.scss';
+import { withRouter } from 'react-router';
 
 const Login = (props) => {
-  const referer = (props.location.state && props.location.state.referer) || '/';
   const { path } = useRouteMatch();
-  const { user } = useAuth();
-  if (user) {
-    return <Redirect to={referer}/>
-  }
   return (
     <>
       <Switch>
@@ -28,4 +23,4 @@ const Login = (props) => {
   );
 };
 
-export default Login;
+export default withRouter(Login);

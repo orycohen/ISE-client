@@ -1,23 +1,22 @@
 import React from 'react';
-import { Route, Link, Switch, useRouteMatch } from 'react-router-dom';
-import Admin from './Admin';
-import AddUser from './AddUser';
-import { useAuth } from '../../Contexts/auth';
+import { Switch, useRouteMatch, Redirect, Route } from 'react-router-dom';
+import DashHome from './DashHome/DashHome';
+import Map from './Map/Map';
+import Messages from './Messages/Messages';
+import Tasks from './Tasks/Tasks';
 
 const Dashboard = () => {
-  const { path, url } = useRouteMatch();
-  const { user } = useAuth();
+  const { path } = useRouteMatch();
   return (
     <div>
-      <div>Welcome {user.name}</div>
-      <Link to={`${url}/admin`}>Admin Page</Link><br/>
-      <Link to={`${url}/adduser`}>Add User</Link>
       <Switch>
-        <Route exact path={path}>
-          <div>Welcome to the dashboard</div>
+        <Route exact path='/dashboard'>
+          <Redirect to={`${path}/home`}/>
         </Route>
-        <Route path={`${path}/admin`} component={Admin}/>
-        <Route path={`${path}/adduser`} component={AddUser}/>
+        <Route path={`${path}/home`} component={DashHome}/>
+        <Route path={`${path}/map`} component={Map}/>
+        <Route path={`${path}/messages`} component={Messages}/>
+        <Route path={`${path}/tasks`} component={Tasks}/>
       </Switch>
     </div>
   );
