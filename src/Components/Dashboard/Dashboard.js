@@ -8,7 +8,7 @@ import Tasks from './Tasks/Tasks';
 const Dashboard = () => {
   const { path } = useRouteMatch();
   return (
-    <div>
+    <>
       <Switch>
         <Route exact path='/dashboard'>
           <Redirect to={`${path}/home`}/>
@@ -18,7 +18,7 @@ const Dashboard = () => {
         <Route path={`${path}/messages`} component={Messages}/>
         <Route path={`${path}/tasks`} component={Tasks}/>
       </Switch>
-    </div>
+    </>
   );
 }
 
