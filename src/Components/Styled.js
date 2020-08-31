@@ -112,6 +112,11 @@ const MagnetBox = styled.div`
       (props.bottom && "padding-bottom:" + props.distance + ";"))}
 `;
 
+const Label = styled.label`
+  color: ${secondary_dark};
+  font-size: 1.2rem;
+`
+
 const Par = styled.p`
   color: ${secondary_dark};
   font-size: 1.5rem;
@@ -119,4 +124,4 @@ const Par = styled.p`
   letter-spacing: 0.5px;
 `;
 
-export { Par, Form, Input, Button, Icon, Card, Error, MagnetBox };
+export { Label, Par, Form, Input, Button, Icon, Card, Error, MagnetBox };
